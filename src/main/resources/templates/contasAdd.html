@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Formulário de conta do exemplo Spring Boot com Thymeleaf">
+	<title th:text="${contasDoMes.id == null ? 'Nova conta' : 'Editar conta'} + ' | Projeto Web'">Nova conta | Projeto Web</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="app-header">
+	<nav class="navbar navbar-expand" data-bs-theme="dark" aria-label="Navegação principal">
+		<div class="container py-2">
+			<a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}">
+				<span>Projeto Web</span>
+			</a>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item"><a class="nav-link" th:href="@{/funcionario}">Funcionários</a></li>
+				<li class="nav-item"><a class="nav-link active" th:href="@{/contas}">Contas do mês</a></li>
+			</ul>
+		</div>
+	</nav>
+</header>
+
+<main class="container form-shell">
+	<nav aria-label="Navegação estrutural" class="mb-4">
+		<a class="back-link" th:href="@{/contas}">← Voltar para as contas</a>
+	</nav>
+
+	<div class="row g-4 align-items-start">
+		<div class="col-lg-4">
+			<p class="eyebrow mb-2">EDITOR</p>
+			<h1 class="display-title form-title" th:text="${contasDoMes.id == null ? 'Nova conta' : 'Editar conta'}">Nova conta</h1>
+			<p class="hero-copy mt-3">Preencha os campos ao lado.</p>
+		</div>
+
+		<div class="col-lg-8">
+			<section class="content-card form-card" aria-label="Dados da conta">
+				<form th:object="${contasDoMes}" th:action="@{/contas/save}" method="post" novalidate>
+					<input type="hidden" th:field="*{id}">
+
+					<div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+						<strong>Revise os campos destacados.</strong>
+						<ul class="mb-0 mt-2 ps-3">
+							<li th:each="erro : ${#fields.detailedErrors()}" th:text="${erro.message}">Mensagem de erro</li>
+						</ul>
+					</div>
+
+					<div class="row g-3">
+						<div class="col-12">
+							<label for="descricao" class="form-label">Descrição</label>
+							<input type="text" id="descricao" th:field="*{descricao}" class="form-control"
+								   th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'" placeholder="Ex.: Aluguel" maxlength="150" autofocus>
+							<div class="invalid-feedback" th:errors="*{descricao}">Erro na descrição</div>
+						</div>
+
+						<div class="col-md-6">
+							<label for="valor" class="form-label">Valor</label>
+							<input type="number" id="valor" th:field="*{valor}" class="form-control"
+								   th:classappend="${#fields.hasErrors('valor')} ? 'is-invalid'" step="0.01" min="0" placeholder="Ex.: 1500.00">
+							<div class="invalid-feedback" th:errors="*{valor}">Erro no valor</div>
+						</div>
+
+						<div class="col-md-6">
+							<label for="dtCadastro" class="form-label">Data de cadastro</label>
+							<input type="date" id="dtCadastro" th:field="*{dtCadastro}" class="form-control"
+								   th:classappend="${#fields.hasErrors('dtCadastro')} ? 'is-invalid'">
+							<div class="invalid-feedback" th:errors="*{dtCadastro}">Erro na data</div>
+						</div>
+					</div>
+
+					<div class="form-actions">
+						<a th:href="@{/contas}" class="btn btn-outline-secondary">Cancelar</a>
+						<button type="submit" class="btn btn-primary px-4" th:text="${contasDoMes.id == null ? 'Cadastrar conta' : 'Salvar alterações'}">Cadastrar conta</button>
+					</div>
+				</form>
+			</section>
+		</div>
+	</div>
+</main>
+
+<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

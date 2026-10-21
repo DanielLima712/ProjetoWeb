@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Projeto Web">
+	<title>Funcionários | Projeto Web</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="app-header">
+	<nav class="navbar navbar-expand" data-bs-theme="dark" aria-label="Navegação principal">
+		<div class="container py-2">
+			<a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}">
+				<span>Projeto Web</span>
+			</a>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item"><a class="nav-link active" th:href="@{/funcionario}">Funcionários</a></li>
+				<li class="nav-item"><a class="nav-link" th:href="@{/contas}">Contas do mês</a></li>
+			</ul>
+		</div>
+	</nav>
+</header>
+
+<main class="container page-shell">
+	<section class="hero-panel mb-4" aria-labelledby="page-title">
+		<div>
+			<h1 id="page-title" class="display-title mb-2">Funcionários</h1>
+		</div>
+		<div class="stat-card" aria-label="Quantidade de funcionários">
+			<span class="stat-number" th:text="${#lists.size(funcionarios)}">0</span>
+			<span class="stat-label" th:text="${#lists.size(funcionarios) == 1 ? 'funcionário cadastrado' : 'funcionários cadastrados'}">funcionários cadastrados</span>
+		</div>
+	</section>
+
+	<div class="alert alert-success alert-dismissible fade show shadow-sm" role="status" th:if="${mensagem}">
+		<span th:text="${mensagem}">Operação realizada com sucesso.</span>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+	</div>
+
+	<section class="content-card" aria-labelledby="list-title">
+		<div class="content-card-header">
+			<div>
+				<p class="section-kicker mb-1">CADASTRO</p>
+				<h2 id="list-title" class="h4 mb-0">Todos os funcionários</h2>
+			</div>
+			<a class="btn btn-primary" th:href="@{/funcionario/add}">+ Novo funcionário</a>
+		</div>
+
+		<div class="empty-state" th:if="${#lists.isEmpty(funcionarios)}">
+			<h3 class="h5">Nenhum funcionário por aqui ainda</h3>
+			<p class="text-secondary mb-4">Cadastre o primeiro funcionário para ver o fluxo completo do CRUD.</p>
+			<a class="btn btn-primary" th:href="@{/funcionario/add}">Cadastrar primeiro funcionário</a>
+		</div>
+
+		<div class="table-responsive" th:unless="${#lists.isEmpty(funcionarios)}">
+			<table class="table app-table align-middle mb-0">
+				<thead>
+				<tr>
+					<th scope="col">CPF</th>
+					<th scope="col">Nome</th>
+					<th scope="col">Salário</th>
+					<th scope="col" class="text-end"><span class="visually-hidden">Ações</span></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="funcionario : ${funcionarios}">
+					<td class="text-nowrap" th:text="${funcionario.cpf}">00000000000</td>
+					<td class="post-title" th:text="${funcionario.nome}">Nome</td>
+					<td class="text-nowrap" th:text="|R$ ${#numbers.formatDecimal(funcionario.salario, 1, 'POINT', 2, 'COMMA')}|">R$ 0,00</td>
+					<td>
+						<div class="d-flex justify-content-end gap-2">
+							<a class="btn btn-sm btn-outline-primary" th:href="@{/funcionario/edit/{cpf}(cpf=${funcionario.cpf})}">Editar</a>
+							<form th:action="@{/funcionario/delete/{cpf}(cpf=${funcionario.cpf})}" method="post"
+								  onsubmit="return confirm('Deseja realmente excluir este funcionário?');">
+								<button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+							</form>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+</main>
+
+<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
